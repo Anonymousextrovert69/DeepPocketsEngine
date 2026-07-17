@@ -46,7 +46,96 @@ RSS_FEEDS = {
     "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
     "Reuters World": "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
     "The Guardian World": "https://www.theguardian.com/world/rss",
+    
     # Add more here: "Source Name": "RSS URL",
+    # ---------------- Global Business ----------------
+    "Reuters Business": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
+    "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
+    "Financial Times": "https://www.ft.com/rss/home",
+    "The Economist": "https://www.economist.com/business/rss.xml",
+    
+    # ---------------- India Business ----------------
+    "Moneycontrol": "https://www.moneycontrol.com/rss/business.xml",
+    "Economic Times": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+    "Business Standard": "https://www.business-standard.com/rss/home_page_top_stories.rss",
+    "Mint": "https://www.livemint.com/rss/news",
+    "Financial Express": "https://www.financialexpress.com/feed/",
+    
+    # ---------------- Startups & D2C ----------------
+    "YourStory": "https://yourstory.com/feed",
+    "Inc42": "https://inc42.com/feed/",
+    "Entrackr": "https://entrackr.com/feed/",
+    "StartupTalky": "https://startuptalky.com/feed/",
+    "StartupNews.fyi": "https://startupnews.fyi/feed",
+    
+    # ---------------- Marketing & Branding ----------------
+    "Marketing Week": "https://www.marketingweek.com/feed/",
+    "Marketing Dive": "https://www.marketingdive.com/feeds/news/",
+    "Adweek": "https://www.adweek.com/feed/",
+    "Campaign Asia": "https://www.campaignasia.com/rss",
+    "The Drum": "https://www.thedrum.com/rss.xml",
+    
+    # ---------------- Consumer Trends ----------------
+    "TrendWatching": "https://trendwatching.com/feed",
+    "Springwise": "https://www.springwise.com/feed/",
+    "PSFK": "https://www.psfk.com/feed",
+    
+    # ---------------- Retail & D2C ----------------
+    "Retail Dive": "https://www.retaildive.com/feeds/news/",
+    "Modern Retail": "https://www.modernretail.co/feed/",
+    "Retail Gazette": "https://www.retailgazette.co.uk/blog/feed/",
+    
+    # ---------------- Manufacturing ----------------
+    "Manufacturing Today India": "https://www.manufacturingtodayindia.com/feed",
+    "Manufacturing Global": "https://manufacturingglobal.com/rss",
+    
+    # ---------------- India Economy ----------------
+    "Reserve Bank of India": "https://www.rbi.org.in/Scripts/RSS.aspx",
+    "PIB Business": "https://pib.gov.in/rss.aspx",
+    "NITI Aayog": "https://www.niti.gov.in/rss.xml",
+    
+    # ---------------- Policy ----------------
+    "Invest India": "https://www.investindia.gov.in/rss.xml",
+    "DPIIT": "https://dpiit.gov.in/rss.xml",
+    
+    # ---------------- Sustainability ----------------
+    "GreenBiz": "https://www.greenbiz.com/rss.xml",
+    "Circular Online": "https://www.circularonline.co.uk/feed/",
+    
+    # ---------------- Luxury ----------------
+    "Business of Fashion": "https://www.businessoffashion.com/feed/",
+    "Vogue Business": "https://www.voguebusiness.com/feed",
+    
+    # ---------------- Food Industry ----------------
+    "FoodNavigator Asia": "https://www.foodnavigator-asia.com/rss",
+    "Food Business News": "https://www.foodbusinessnews.net/rss",
+    
+    # ---------------- Tech & Innovation ----------------
+    "TechCrunch": "https://techcrunch.com/feed/",
+    "Rest of World": "https://restofworld.org/feed/latest/",
+    "Wired": "https://www.wired.com/feed/rss",
+    
+    # ---------------- Design ----------------
+    "Dezeen": "https://www.dezeen.com/feed/",
+    "DesignBoom": "https://www.designboom.com/feed/",
+    
+    # ---------------- Packaging ----------------
+    "Packaging Europe": "https://packagingeurope.com/feed/",
+    "The Dieline": "https://thedieline.com/blog?format=rss",
+    
+    # ---------------- Agriculture ----------------
+    "Down To Earth": "https://www.downtoearth.org.in/rss",
+    "Mongabay India": "https://india.mongabay.com/feed/",
+    
+    # ---------------- Global Affairs ----------------
+    "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
+    "The Guardian Business": "https://www.theguardian.com/business/rss",
+    "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
+    
+    # ---------------- Consumer Goods ----------------
+    "FMCG Gurus": "https://fmcggurus.com/feed/",
+    "CPG Wire": "https://cpgwire.com/feed/"
+    
 }
 
 # -----------------------------------------------------------------------
@@ -103,6 +192,148 @@ KEYWORDS = [
     "Hermes",
     "Gucci",
     "kolhapuri",
+
+    # --- Indian Heritage & Culture ---
+    "heritage",
+    "traditional",
+    "handloom",
+    "handicraft",
+    "GI Tag",
+    "Geographical Indication",
+    "Ayurveda",
+    "Khadi",
+    "tribal",
+    "artisan",
+
+    # --- Indian Food & Regional Brands ---
+    "mithai",
+    "pickles",
+    "spices",
+    "tea",
+    "coffee",
+    "millets",
+    "jaggery",
+    "mahua",
+    "ghee",
+    "namkeen",
+    
+    # --- Indian Fashion & Lifestyle ---
+    "saree",
+    "kolhapuri",
+    "banarasi",
+    "pashmina",
+    "kalamkari",
+    "chikankari",
+    "ajrakh",
+    "bandhani",
+    "khussa",
+    "mojari",
+    
+    # --- Indian Consumer Brands ---
+    "Bombay Sweet Shop",
+    "Gully Labs",
+    "Phool",
+    "Blue Tokai",
+    "Paper Boat",
+    "Forest Essentials",
+    "Nicobar",
+    "Rare Rabbit",
+    "Comet",
+    "DailyObjects",
+    
+    # --- Luxury Brands Using Indian Design ---
+    "Prada",
+    "Louis Vuitton",
+    "Hermes",
+    "Gucci",
+    "Dior",
+    
+    # --- Startup Keywords ---
+    "startup",
+    "D2C",
+    "bootstrapped",
+    "founder",
+    "unicorn",
+    "venture capital",
+    "funding",
+    "seed round",
+    "Series A",
+    "profitability",
+    
+    # --- Business Strategy ---
+    "branding",
+    "positioning",
+    "premiumization",
+    "distribution",
+    "pricing",
+    "community",
+    "network effects",
+    "moat",
+    "category creation",
+    "go-to-market",
+    
+    # --- Consumer Psychology ---
+    "nostalgia",
+    "identity",
+    "status",
+    "luxury",
+    "aspiration",
+    "consumer behavior",
+    "tribe",
+    "scarcity",
+    "social proof",
+    "pricing psychology",
+    
+    # --- India Economy ---
+    "Make in India",
+    "Atmanirbhar Bharat",
+    "manufacturing",
+    "exports",
+    "MSME",
+    "PLI Scheme",
+    "GDP",
+    "inflation",
+    "rupee",
+    "middle class",
+    
+    # --- Indian Business Houses ---
+    "Tata",
+    "Reliance",
+    "Adani",
+    "Mahindra",
+    "Godrej",
+    
+    # --- Global Companies Affecting India ---
+    "Nike",
+    "Adidas",
+    "Apple",
+    "Starbucks",
+    "IKEA",
+    
+    # --- Sustainability & Purpose ---
+    "circular economy",
+    "recycling",
+    "upcycling",
+    "climate tech",
+    "plastic waste",
+    "waste management",
+    "carbon",
+    "ESG",
+    "ethical sourcing",
+    "regenerative",
+    
+    # --- Creator Opportunity Keywords ---
+    "case study",
+    "business story",
+    "brand strategy",
+    "marketing campaign",
+    "rebranding",
+    "viral product",
+    "cult brand",
+    "purpose-driven",
+    "Made in India",
+    "Indian innovation"
+    
 ]
 
 # How many days back to consider an article "recent" (RSS often mixes dates)

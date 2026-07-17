@@ -7,7 +7,7 @@ frequency (descending) — with the actual headlines/links behind each hit,
 so you can go straight from "trending keyword" to "video idea".
 
 Setup (one-time):
-    pip install feedparser requests --break-system-packages
+    pip install feedparser --break-system-packages
 
 Run:
     python deep_pockets_tracker.py
@@ -23,149 +23,174 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import csv
 import re
+import time
 
 # -----------------------------------------------------------------------
 # 1. CONFIGURE YOUR SOURCES — add/remove RSS feeds freely
+#    NOTE: dict keys must be unique. If you paste in a source name that
+#    already exists, Python will silently overwrite the first one and
+#    you'll lose that feed without any error. Give each entry a distinct
+#    name if two feeds happen to share a source name.
 # -----------------------------------------------------------------------
 RSS_FEEDS = {
-    # General news (context, GI/trademark disputes often break here first)
+    # ---------------- General news ----------------
     "Times of India": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
     "Hindustan Times": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
     "The Hindu": "https://www.thehindu.com/news/national/feeder/default.rss",
     "Indian Express": "https://indianexpress.com/section/india/feed/",
     "NDTV": "https://feeds.feedburner.com/ndtvnews-india-news",
 
-    # Business & economy (this is where your actual story angle lives)
-    "Economic Times": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-    "Livemint": "https://www.livemint.com/rss/news",
-    "Business Standard": "https://www.business-standard.com/rss/latest.rss",
-    "Moneycontrol": "https://www.moneycontrol.com/rss/latestnews.xml",
-    "YourStory (startups/D2C)": "https://yourstory.com/feed",
-
-    # Global comparison anchors
+    # ---------------- Global news / affairs ----------------
     "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
+    "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
     "Reuters World": "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
-    "The Guardian World": "https://www.theguardian.com/world/rss",
-    
-    # Add more here: "Source Name": "RSS URL",
-    # ---------------- Global Business ----------------
     "Reuters Business": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
+    "The Guardian World": "https://www.theguardian.com/world/rss",
+    "The Guardian Business": "https://www.theguardian.com/business/rss",
+    "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
     "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
     "Financial Times": "https://www.ft.com/rss/home",
     "The Economist": "https://www.economist.com/business/rss.xml",
-    
-    # ---------------- India Business ----------------
-    "Moneycontrol": "https://www.moneycontrol.com/rss/business.xml",
-    "Economic Times": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
-    "Business Standard": "https://www.business-standard.com/rss/home_page_top_stories.rss",
-    "Mint": "https://www.livemint.com/rss/news",
+
+    # ---------------- India business & economy ----------------
+    # Renamed pairs below: same source, two different feeds/sections each,
+    # kept as separate entries instead of overwriting one another.
+    "Economic Times - Top Stories": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
+    "Economic Times - All News": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+    "Business Standard - Latest": "https://www.business-standard.com/rss/latest.rss",
+    "Business Standard - Top Stories": "https://www.business-standard.com/rss/home_page_top_stories.rss",
+    "Moneycontrol - Latest News": "https://www.moneycontrol.com/rss/latestnews.xml",
+    "Moneycontrol - Business": "https://www.moneycontrol.com/rss/business.xml",
+    "Livemint": "https://www.livemint.com/rss/news",
     "Financial Express": "https://www.financialexpress.com/feed/",
-    
+
     # ---------------- Startups & D2C ----------------
     "YourStory": "https://yourstory.com/feed",
     "Inc42": "https://inc42.com/feed/",
     "Entrackr": "https://entrackr.com/feed/",
     "StartupTalky": "https://startuptalky.com/feed/",
     "StartupNews.fyi": "https://startupnews.fyi/feed",
-    
-    # ---------------- Marketing & Branding ----------------
+
+    # ---------------- Marketing & branding ----------------
     "Marketing Week": "https://www.marketingweek.com/feed/",
     "Marketing Dive": "https://www.marketingdive.com/feeds/news/",
     "Adweek": "https://www.adweek.com/feed/",
     "Campaign Asia": "https://www.campaignasia.com/rss",
     "The Drum": "https://www.thedrum.com/rss.xml",
-    
-    # ---------------- Consumer Trends ----------------
+
+    # ---------------- Consumer trends ----------------
     "TrendWatching": "https://trendwatching.com/feed",
     "Springwise": "https://www.springwise.com/feed/",
     "PSFK": "https://www.psfk.com/feed",
-    
+
     # ---------------- Retail & D2C ----------------
     "Retail Dive": "https://www.retaildive.com/feeds/news/",
     "Modern Retail": "https://www.modernretail.co/feed/",
     "Retail Gazette": "https://www.retailgazette.co.uk/blog/feed/",
-    
+
     # ---------------- Manufacturing ----------------
     "Manufacturing Today India": "https://www.manufacturingtodayindia.com/feed",
     "Manufacturing Global": "https://manufacturingglobal.com/rss",
-    
-    # ---------------- India Economy ----------------
+
+    # ---------------- India economy / policy ----------------
     "Reserve Bank of India": "https://www.rbi.org.in/Scripts/RSS.aspx",
     "PIB Business": "https://pib.gov.in/rss.aspx",
     "NITI Aayog": "https://www.niti.gov.in/rss.xml",
-    
-    # ---------------- Policy ----------------
     "Invest India": "https://www.investindia.gov.in/rss.xml",
     "DPIIT": "https://dpiit.gov.in/rss.xml",
-    
+
     # ---------------- Sustainability ----------------
     "GreenBiz": "https://www.greenbiz.com/rss.xml",
     "Circular Online": "https://www.circularonline.co.uk/feed/",
-    
+
     # ---------------- Luxury ----------------
     "Business of Fashion": "https://www.businessoffashion.com/feed/",
     "Vogue Business": "https://www.voguebusiness.com/feed",
-    
-    # ---------------- Food Industry ----------------
+
+    # ---------------- Food industry ----------------
     "FoodNavigator Asia": "https://www.foodnavigator-asia.com/rss",
     "Food Business News": "https://www.foodbusinessnews.net/rss",
-    
-    # ---------------- Tech & Innovation ----------------
+
+    # ---------------- Tech & innovation ----------------
     "TechCrunch": "https://techcrunch.com/feed/",
     "Rest of World": "https://restofworld.org/feed/latest/",
     "Wired": "https://www.wired.com/feed/rss",
-    
+
     # ---------------- Design ----------------
     "Dezeen": "https://www.dezeen.com/feed/",
     "DesignBoom": "https://www.designboom.com/feed/",
-    
+
     # ---------------- Packaging ----------------
     "Packaging Europe": "https://packagingeurope.com/feed/",
     "The Dieline": "https://thedieline.com/blog?format=rss",
-    
+
     # ---------------- Agriculture ----------------
     "Down To Earth": "https://www.downtoearth.org.in/rss",
     "Mongabay India": "https://india.mongabay.com/feed/",
-    
-    # ---------------- Global Affairs ----------------
-    "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
-    "The Guardian Business": "https://www.theguardian.com/business/rss",
-    "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
-    
-    # ---------------- Consumer Goods ----------------
+
+    # ---------------- Consumer goods ----------------
     "FMCG Gurus": "https://fmcggurus.com/feed/",
-    "CPG Wire": "https://cpgwire.com/feed/"
-    
+    "CPG Wire": "https://cpgwire.com/feed/",
 }
 
 # -----------------------------------------------------------------------
 # 2. CONFIGURE YOUR KEYWORDS — this is your niche lens
+#    NOTE: list entries CAN legally repeat (unlike dict keys) — Python
+#    won't stop you. But every repeated keyword gets counted twice per
+#    mention, which artificially inflates its rank. Keep each keyword
+#    (case-insensitive) listed exactly once.
 # -----------------------------------------------------------------------
 KEYWORDS = [
     # --- Core narrative: India creates, someone else captures the value ---
-    "GI tag",                    # Geographical Indication disputes (Kolhapuri/Prada type stories)
+    "GI tag",
+    "Geographical Indication",
     "cultural appropriation",
     "knockoff",
     "IP theft",
     "trademark dispute",
     "counterfeit",
-    "who owns",                  # catches "who owns the brand/design/recipe" framing
+    "who owns",
 
-    # --- Branding & premiumization (your recurring economic angle) ---
+    # --- Branding & premiumization ---
     "premiumization",
     "D2C brand",
     "heritage brand",
     "global icon",
     "market creation",
     "brand identity",
-    "made in India",
+    "brand strategy",
+    "rebranding",
+    "cult brand",
+    "positioning",
+    "distribution",
+    "pricing",
+    "pricing psychology",
+    "community",
+    "network effects",
+    "moat",
+    "category creation",
+    "category leader",
+    "go-to-market",
+    "viral product",
+    "purpose-driven",
+
+    # --- India-specific economic framing ---
     "Make in India",
+    "Atmanirbhar Bharat",
+    "manufacturing",
     "export potential",
+    "exports",
     "value chain",
     "cold-chain",
     "private label",
+    "MSME",
+    "PLI Scheme",
+    "GDP",
+    "inflation",
+    "rupee",
+    "middle class",
 
-    # --- Heritage industries you've already covered — track for follow-ups ---
+    # --- Heritage industries / product categories ---
     "seafood export",
     "aquaculture",
     "mineral water",
@@ -173,51 +198,29 @@ KEYWORDS = [
     "Indian watches",
     "horology",
     "handloom",
+    "handicraft",
     "textile export",
     "tattoo culture",
     "superfood",
     "Moringa",
-    "GI-tagged",
-
-    # --- Comparative "X country owns this category" stories ---
-    "Norway salmon",
-    "Japan matcha",
-    "Swiss watch industry",
-    "global demand",
-    "category leader",
-
-    # --- Luxury brands using Indian design (appropriation-story bait) ---
-    "Prada",
-    "Louis Vuitton",
-    "Hermes",
-    "Gucci",
-    "kolhapuri",
-
-    # --- Indian Heritage & Culture ---
     "heritage",
     "traditional",
-    "handloom",
-    "handicraft",
-    "GI Tag",
-    "Geographical Indication",
     "Ayurveda",
     "Khadi",
     "tribal",
     "artisan",
 
-    # --- Indian Food & Regional Brands ---
+    # --- Indian food & regional brands ---
     "mithai",
     "pickles",
     "spices",
-    "tea",
-    "coffee",
     "millets",
     "jaggery",
     "mahua",
     "ghee",
     "namkeen",
-    
-    # --- Indian Fashion & Lifestyle ---
+
+    # --- Indian fashion & lifestyle ---
     "saree",
     "kolhapuri",
     "banarasi",
@@ -228,8 +231,8 @@ KEYWORDS = [
     "bandhani",
     "khussa",
     "mojari",
-    
-    # --- Indian Consumer Brands ---
+
+    # --- Named Indian consumer brands ---
     "Bombay Sweet Shop",
     "Gully Labs",
     "Phool",
@@ -240,15 +243,33 @@ KEYWORDS = [
     "Rare Rabbit",
     "Comet",
     "DailyObjects",
-    
-    # --- Luxury Brands Using Indian Design ---
+
+    # --- Named Indian business houses ---
+    "Tata",
+    "Reliance",
+    "Adani",
+    "Mahindra",
+    "Godrej",
+
+    # --- Global comparison anchors ---
+    "Norway salmon",
+    "Japan matcha",
+    "Swiss watch industry",
+    "global demand",
+
+    # --- Luxury brands / global companies affecting India ---
     "Prada",
     "Louis Vuitton",
     "Hermes",
     "Gucci",
     "Dior",
-    
-    # --- Startup Keywords ---
+    "Nike",
+    "Adidas",
+    "Apple",
+    "Starbucks",
+    "IKEA",
+
+    # --- Startup / funding ---
     "startup",
     "D2C",
     "bootstrapped",
@@ -259,20 +280,8 @@ KEYWORDS = [
     "seed round",
     "Series A",
     "profitability",
-    
-    # --- Business Strategy ---
-    "branding",
-    "positioning",
-    "premiumization",
-    "distribution",
-    "pricing",
-    "community",
-    "network effects",
-    "moat",
-    "category creation",
-    "go-to-market",
-    
-    # --- Consumer Psychology ---
+
+    # --- Consumer psychology ---
     "nostalgia",
     "identity",
     "status",
@@ -282,35 +291,8 @@ KEYWORDS = [
     "tribe",
     "scarcity",
     "social proof",
-    "pricing psychology",
-    
-    # --- India Economy ---
-    "Make in India",
-    "Atmanirbhar Bharat",
-    "manufacturing",
-    "exports",
-    "MSME",
-    "PLI Scheme",
-    "GDP",
-    "inflation",
-    "rupee",
-    "middle class",
-    
-    # --- Indian Business Houses ---
-    "Tata",
-    "Reliance",
-    "Adani",
-    "Mahindra",
-    "Godrej",
-    
-    # --- Global Companies Affecting India ---
-    "Nike",
-    "Adidas",
-    "Apple",
-    "Starbucks",
-    "IKEA",
-    
-    # --- Sustainability & Purpose ---
+
+    # --- Sustainability & purpose ---
     "circular economy",
     "recycling",
     "upcycling",
@@ -321,19 +303,11 @@ KEYWORDS = [
     "ESG",
     "ethical sourcing",
     "regenerative",
-    
-    # --- Creator Opportunity Keywords ---
+
+    # --- Creator/story-angle flags ---
     "case study",
     "business story",
-    "brand strategy",
     "marketing campaign",
-    "rebranding",
-    "viral product",
-    "cult brand",
-    "purpose-driven",
-    "Made in India",
-    "Indian innovation"
-    
 ]
 
 # How many days back to consider an article "recent" (RSS often mixes dates)
@@ -341,7 +315,10 @@ LOOKBACK_DAYS = 2
 
 
 def fetch_articles():
-    """Pull entries from all feeds, tag with source."""
+    """Pull entries from all feeds, tag with source, and filter to the
+    last LOOKBACK_DAYS days when the feed provides a parseable date.
+    If a feed entry has no date at all, it's kept (better to include an
+    undated item than to silently drop it)."""
     articles = []
     cutoff = datetime.now() - timedelta(days=LOOKBACK_DAYS)
 
@@ -349,6 +326,15 @@ def fetch_articles():
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
+                # feedparser exposes parsed dates as time.struct_time via
+                # published_parsed / updated_parsed when it can figure
+                # the format out. Fall back gracefully when it can't.
+                struct = entry.get("published_parsed") or entry.get("updated_parsed")
+                if struct is not None:
+                    entry_dt = datetime.fromtimestamp(time.mktime(struct))
+                    if entry_dt < cutoff:
+                        continue  # too old, skip it
+
                 title = entry.get("title", "")
                 summary = entry.get("summary", "") or entry.get("description", "")
                 link = entry.get("link", "")

@@ -33,105 +33,129 @@ import time
 #    name if two feeds happen to share a source name.
 # -----------------------------------------------------------------------
 RSS_FEEDS = {
-    # ---------------- General news ----------------
-    "Times of India": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
-    "Hindustan Times": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
-    "The Hindu": "https://www.thehindu.com/news/national/feeder/default.rss",
-    "Indian Express": "https://indianexpress.com/section/india/feed/",
-    "NDTV": "https://feeds.feedburner.com/ndtvnews-india-news",
+    # # ---------------- General news ----------------
+# "Times of India": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
+# "Hindustan Times": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
+# "The Hindu": "https://www.thehindu.com/news/national/feeder/default.rss",
+# "Indian Express": "https://indianexpress.com/section/india/feed/",
+# "NDTV": "https://feeds.feedburner.com/ndtvnews-india-news",
 
-    # ---------------- Global news / affairs ----------------
-    "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
-    "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
-    "Reuters World": "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
-    "Reuters Business": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
-    "The Guardian World": "https://www.theguardian.com/world/rss",
-    "The Guardian Business": "https://www.theguardian.com/business/rss",
-    "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
-    "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
-    "Financial Times": "https://www.ft.com/rss/home",
-    "The Economist": "https://www.economist.com/business/rss.xml",
+# # ---------------- Global news / affairs ----------------
+# "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
+# "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
+# "Reuters World": "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
+# "Reuters Business": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
+# "The Guardian World": "https://www.theguardian.com/world/rss",
+# "The Guardian Business": "https://www.theguardian.com/business/rss",
+# "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
+# "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
+# "Financial Times": "https://www.ft.com/rss/home",
+# "The Economist": "https://www.economist.com/business/rss.xml",
 
-    # ---------------- India business & economy ----------------
-    # Renamed pairs below: same source, two different feeds/sections each,
-    # kept as separate entries instead of overwriting one another.
-    "Economic Times - Top Stories": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-    "Economic Times - All News": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
-    "Business Standard - Latest": "https://www.business-standard.com/rss/latest.rss",
-    "Business Standard - Top Stories": "https://www.business-standard.com/rss/home_page_top_stories.rss",
-    "Moneycontrol - Latest News": "https://www.moneycontrol.com/rss/latestnews.xml",
-    "Moneycontrol - Business": "https://www.moneycontrol.com/rss/business.xml",
-    "Livemint": "https://www.livemint.com/rss/news",
-    "Financial Express": "https://www.financialexpress.com/feed/",
+# # ---------------- India business & economy ----------------
+# # Renamed pairs below: same source, two different feeds/sections each,
+# # kept as separate entries instead of overwriting one another.
+# "Economic Times - Top Stories": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
+# "Economic Times - All News": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+# "Business Standard - Latest": "https://www.business-standard.com/rss/latest.rss",
+# "Business Standard - Top Stories": "https://www.business-standard.com/rss/home_page_top_stories.rss",
+# "Moneycontrol - Latest News": "https://www.moneycontrol.com/rss/latestnews.xml",
+# "Moneycontrol - Business": "https://www.moneycontrol.com/rss/business.xml",
+# "Livemint": "https://www.livemint.com/rss/news",
+# "Financial Express": "https://www.financialexpress.com/feed/",
 
-    # ---------------- Startups & D2C ----------------
-    "YourStory": "https://yourstory.com/feed",
-    "Inc42": "https://inc42.com/feed/",
-    "Entrackr": "https://entrackr.com/feed/",
-    "StartupTalky": "https://startuptalky.com/feed/",
-    "StartupNews.fyi": "https://startupnews.fyi/feed",
+# # ---------------- Startups & D2C ----------------
+# "YourStory": "https://yourstory.com/feed",
+# "Inc42": "https://inc42.com/feed/",
+# "Entrackr": "https://entrackr.com/feed/",
+# "StartupTalky": "https://startuptalky.com/feed/",
+# "StartupNews.fyi": "https://startupnews.fyi/feed",
 
-    # ---------------- Marketing & branding ----------------
-    "Marketing Week": "https://www.marketingweek.com/feed/",
-    "Marketing Dive": "https://www.marketingdive.com/feeds/news/",
-    "Adweek": "https://www.adweek.com/feed/",
-    "Campaign Asia": "https://www.campaignasia.com/rss",
-    "The Drum": "https://www.thedrum.com/rss.xml",
+# # ---------------- Marketing & branding ----------------
+# "Marketing Week": "https://www.marketingweek.com/feed/",
+# "Marketing Dive": "https://www.marketingdive.com/feeds/news/",
+# "Adweek": "https://www.adweek.com/feed/",
+# "Campaign Asia": "https://www.campaignasia.com/rss",
+# "The Drum": "https://www.thedrum.com/rss.xml",
 
-    # ---------------- Consumer trends ----------------
-    "TrendWatching": "https://trendwatching.com/feed",
-    "Springwise": "https://www.springwise.com/feed/",
-    "PSFK": "https://www.psfk.com/feed",
+# # ---------------- Consumer trends ----------------
+# "TrendWatching": "https://trendwatching.com/feed",
+# "Springwise": "https://www.springwise.com/feed/",
+# "PSFK": "https://www.psfk.com/feed",
 
-    # ---------------- Retail & D2C ----------------
-    "Retail Dive": "https://www.retaildive.com/feeds/news/",
-    "Modern Retail": "https://www.modernretail.co/feed/",
-    "Retail Gazette": "https://www.retailgazette.co.uk/blog/feed/",
+# # ---------------- Retail & D2C ----------------
+# "Retail Dive": "https://www.retaildive.com/feeds/news/",
+# "Modern Retail": "https://www.modernretail.co/feed/",
+# "Retail Gazette": "https://www.retailgazette.co.uk/blog/feed/",
 
-    # ---------------- Manufacturing ----------------
-    "Manufacturing Today India": "https://www.manufacturingtodayindia.com/feed",
-    "Manufacturing Global": "https://manufacturingglobal.com/rss",
+# # ---------------- Manufacturing ----------------
+# "Manufacturing Today India": "https://www.manufacturingtodayindia.com/feed",
+# "Manufacturing Global": "https://manufacturingglobal.com/rss",
 
-    # ---------------- India economy / policy ----------------
-    "Reserve Bank of India": "https://www.rbi.org.in/Scripts/RSS.aspx",
-    "PIB Business": "https://pib.gov.in/rss.aspx",
-    "NITI Aayog": "https://www.niti.gov.in/rss.xml",
-    "Invest India": "https://www.investindia.gov.in/rss.xml",
-    "DPIIT": "https://dpiit.gov.in/rss.xml",
+# # ---------------- India economy / policy ----------------
+# "Reserve Bank of India": "https://www.rbi.org.in/Scripts/RSS.aspx",
+# "PIB Business": "https://pib.gov.in/rss.aspx",
+# "NITI Aayog": "https://www.niti.gov.in/rss.xml",
+# "Invest India": "https://www.investindia.gov.in/rss.xml",
+# "DPIIT": "https://dpiit.gov.in/rss.xml",
 
-    # ---------------- Sustainability ----------------
-    "GreenBiz": "https://www.greenbiz.com/rss.xml",
-    "Circular Online": "https://www.circularonline.co.uk/feed/",
+# # ---------------- Sustainability ----------------
+# "GreenBiz": "https://www.greenbiz.com/rss.xml",
+# "Circular Online": "https://www.circularonline.co.uk/feed/",
 
-    # ---------------- Luxury ----------------
-    "Business of Fashion": "https://www.businessoffashion.com/feed/",
-    "Vogue Business": "https://www.voguebusiness.com/feed",
+# # ---------------- Luxury ----------------
+# "Business of Fashion": "https://www.businessoffashion.com/feed/",
+# "Vogue Business": "https://www.voguebusiness.com/feed",
 
-    # ---------------- Food industry ----------------
-    "FoodNavigator Asia": "https://www.foodnavigator-asia.com/rss",
-    "Food Business News": "https://www.foodbusinessnews.net/rss",
+# # ---------------- Food industry ----------------
+# "FoodNavigator Asia": "https://www.foodnavigator-asia.com/rss",
+# "Food Business News": "https://www.foodbusinessnews.net/rss",
 
-    # ---------------- Tech & innovation ----------------
-    "TechCrunch": "https://techcrunch.com/feed/",
-    "Rest of World": "https://restofworld.org/feed/latest/",
-    "Wired": "https://www.wired.com/feed/rss",
+# # ---------------- Tech & innovation ----------------
+# "TechCrunch": "https://techcrunch.com/feed/",
+# "Rest of World": "https://restofworld.org/feed/latest/",
+# "Wired": "https://www.wired.com/feed/rss",
 
-    # ---------------- Design ----------------
-    "Dezeen": "https://www.dezeen.com/feed/",
-    "DesignBoom": "https://www.designboom.com/feed/",
+# # ---------------- Design ----------------
+# "Dezeen": "https://www.dezeen.com/feed/",
+# "DesignBoom": "https://www.designboom.com/feed/",
 
-    # ---------------- Packaging ----------------
-    "Packaging Europe": "https://packagingeurope.com/feed/",
-    "The Dieline": "https://thedieline.com/blog?format=rss",
+# # ---------------- Packaging ----------------
+# "Packaging Europe": "https://packagingeurope.com/feed/",
+# "The Dieline": "https://thedieline.com/blog?format=rss",
 
-    # ---------------- Agriculture ----------------
-    "Down To Earth": "https://www.downtoearth.org.in/rss",
-    "Mongabay India": "https://india.mongabay.com/feed/",
+# # ---------------- Agriculture ----------------
+# "Down To Earth": "https://www.downtoearth.org.in/rss",
+# "Mongabay India": "https://india.mongabay.com/feed/",
 
-    # ---------------- Consumer goods ----------------
-    "FMCG Gurus": "https://fmcggurus.com/feed/",
-    "CPG Wire": "https://cpgwire.com/feed/",
+# # ---------------- Consumer goods ----------------
+# "FMCG Gurus": "https://fmcggurus.com/feed/",
+# "CPG Wire": "https://cpgwire.com/feed/",
 
+    # ----------------- Deep Pockets -----------------
+    "Bar and Bench": "https://www.barandbench.com/stories.rss,
+    "Tribune India": "https://www.tribuneindia.com/rss-feeds",
+      "9to5Google": "https://9to5google.com/feed",
+      "Onmanorama": "https://www.onmanorama.com/rss.html",
+      "The Talented Indian": "https://www.thetalentedindian.com/feed",
+      "Gadgets 360": "https://www.gadgets360.com/rss",
+      "BBC News": "https://feeds.bbci.co.uk/news/rss.xml",
+      "Mongabay": "https://news.mongabay.com/feed/",
+      "Storyboard18": "https://www.storyboard18.com/feed/",
+      "Tourism India Online": "https://tourismindiaonline.com/feed/",
+      "TwoCircles.net": "https://twocircles.net/feed",
+      "The Better India": "https://www.thebetterindia.com/feed/",
+      "The Whiskey Wash": "https://thewhiskeywash.com/feed/",
+      "Homegrown": "https://homegrown.co.in/feed",
+      "Lyst Data": null,
+      "BuzzInContent": "https://www.buzzincontent.com/feed/",
+      "Social Media Today": "https://www.socialmediatoday.com/feeds/news/",
+      "India Today": "https://www.indiatoday.in/rss/home",
+      "Architectural Digest India": "https://www.architecturaldigest.in/feed/",
+      "The Established": "https://www.theestablished.com/feed/",
+      "Monochrome Watches": "https://monochrome-watches.com/feed/",
+      "Futura Sciences": "https://www.futura-sciences.com/en/rss/news.xml",
+      "ELLE India": "https://elle.in/feed/" 
     
 }
 

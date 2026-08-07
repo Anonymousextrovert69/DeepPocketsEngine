@@ -24,6 +24,10 @@ from datetime import datetime, timedelta
 import csv
 import re
 import time
+import os
+import json
+import urllib.request
+import urllib.error
 
 # -----------------------------------------------------------------------
 # 1. CONFIGURE YOUR SOURCES — add/remove RSS feeds freely
@@ -33,233 +37,137 @@ import time
 #    name if two feeds happen to share a source name.
 # -----------------------------------------------------------------------
 RSS_FEEDS = {
-    # # ---------------- General news ----------------
-# "Times of India": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
-# "Hindustan Times": "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
-# "The Hindu": "https://www.thehindu.com/news/national/feeder/default.rss",
-# "Indian Express": "https://indianexpress.com/section/india/feed/",
-# "NDTV": "https://feeds.feedburner.com/ndtvnews-india-news",
-
-# # ---------------- Global news / affairs ----------------
-# "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
-# "BBC Business": "http://feeds.bbci.co.uk/news/business/rss.xml",
-# "Reuters World": "https://www.reutersagency.com/feed/?best-topics=world&post_type=best",
-# "Reuters Business": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
-# "The Guardian World": "https://www.theguardian.com/world/rss",
-# "The Guardian Business": "https://www.theguardian.com/business/rss",
-# "CNN Business": "http://rss.cnn.com/rss/money_latest.rss",
-# "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
-# "Financial Times": "https://www.ft.com/rss/home",
-# "The Economist": "https://www.economist.com/business/rss.xml",
-
-# # ---------------- India business & economy ----------------
-# # Renamed pairs below: same source, two different feeds/sections each,
-# # kept as separate entries instead of overwriting one another.
-# "Economic Times - Top Stories": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-# "Economic Times - All News": "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
-# "Business Standard - Latest": "https://www.business-standard.com/rss/latest.rss",
-# "Business Standard - Top Stories": "https://www.business-standard.com/rss/home_page_top_stories.rss",
-# "Moneycontrol - Latest News": "https://www.moneycontrol.com/rss/latestnews.xml",
-# "Moneycontrol - Business": "https://www.moneycontrol.com/rss/business.xml",
-# "Livemint": "https://www.livemint.com/rss/news",
-# "Financial Express": "https://www.financialexpress.com/feed/",
-
-# # ---------------- Startups & D2C ----------------
-# "YourStory": "https://yourstory.com/feed",
-# "Inc42": "https://inc42.com/feed/",
-# "Entrackr": "https://entrackr.com/feed/",
-# "StartupTalky": "https://startuptalky.com/feed/",
-# "StartupNews.fyi": "https://startupnews.fyi/feed",
-
-# # ---------------- Marketing & branding ----------------
-# "Marketing Week": "https://www.marketingweek.com/feed/",
-# "Marketing Dive": "https://www.marketingdive.com/feeds/news/",
-# "Adweek": "https://www.adweek.com/feed/",
-# "Campaign Asia": "https://www.campaignasia.com/rss",
-# "The Drum": "https://www.thedrum.com/rss.xml",
-
-# # ---------------- Consumer trends ----------------
-# "TrendWatching": "https://trendwatching.com/feed",
-# "Springwise": "https://www.springwise.com/feed/",
-# "PSFK": "https://www.psfk.com/feed",
-
-# # ---------------- Retail & D2C ----------------
-# "Retail Dive": "https://www.retaildive.com/feeds/news/",
-# "Modern Retail": "https://www.modernretail.co/feed/",
-# "Retail Gazette": "https://www.retailgazette.co.uk/blog/feed/",
-
-# # ---------------- Manufacturing ----------------
-# "Manufacturing Today India": "https://www.manufacturingtodayindia.com/feed",
-# "Manufacturing Global": "https://manufacturingglobal.com/rss",
-
-# # ---------------- India economy / policy ----------------
-# "Reserve Bank of India": "https://www.rbi.org.in/Scripts/RSS.aspx",
-# "PIB Business": "https://pib.gov.in/rss.aspx",
-# "NITI Aayog": "https://www.niti.gov.in/rss.xml",
-# "Invest India": "https://www.investindia.gov.in/rss.xml",
-# "DPIIT": "https://dpiit.gov.in/rss.xml",
-
-# # ---------------- Sustainability ----------------
-# "GreenBiz": "https://www.greenbiz.com/rss.xml",
-# "Circular Online": "https://www.circularonline.co.uk/feed/",
-
-# # ---------------- Luxury ----------------
-# "Business of Fashion": "https://www.businessoffashion.com/feed/",
-# "Vogue Business": "https://www.voguebusiness.com/feed",
-
-# # ---------------- Food industry ----------------
-# "FoodNavigator Asia": "https://www.foodnavigator-asia.com/rss",
-# "Food Business News": "https://www.foodbusinessnews.net/rss",
-
-# # ---------------- Tech & innovation ----------------
-# "TechCrunch": "https://techcrunch.com/feed/",
-# "Rest of World": "https://restofworld.org/feed/latest/",
-# "Wired": "https://www.wired.com/feed/rss",
-
-# # ---------------- Design ----------------
-# "Dezeen": "https://www.dezeen.com/feed/",
-# "DesignBoom": "https://www.designboom.com/feed/",
-
-# # ---------------- Packaging ----------------
-# "Packaging Europe": "https://packagingeurope.com/feed/",
-# "The Dieline": "https://thedieline.com/blog?format=rss",
-
-# # ---------------- Agriculture ----------------
-# "Down To Earth": "https://www.downtoearth.org.in/rss",
-# "Mongabay India": "https://india.mongabay.com/feed/",
-
-# # ---------------- Consumer goods ----------------
-# "FMCG Gurus": "https://fmcggurus.com/feed/",
-# "CPG Wire": "https://cpgwire.com/feed/",
-
-    # ----------------- Deep Pockets -----------------
-    "Bar and Bench": "https://www.barandbench.com/stories.rss,
+    "Bar and Bench": "https://www.barandbench.com/stories.rss",
     "Tribune India": "https://www.tribuneindia.com/rss-feeds",
-      "9to5Google": "https://9to5google.com/feed",
-      "Onmanorama": "https://www.onmanorama.com/rss.html",
-      "The Talented Indian": "https://www.thetalentedindian.com/feed",
-      "Gadgets 360": "https://www.gadgets360.com/rss",
-      "BBC News": "https://feeds.bbci.co.uk/news/rss.xml",
-      "Mongabay": "https://news.mongabay.com/feed/",
-      "Storyboard18": "https://www.storyboard18.com/feed/",
-      "Tourism India Online": "https://tourismindiaonline.com/feed/",
-      "TwoCircles.net": "https://twocircles.net/feed",
-      "The Better India": "https://www.thebetterindia.com/feed/",
-      "The Whiskey Wash": "https://thewhiskeywash.com/feed/",
-      "Homegrown": "https://homegrown.co.in/feed",
-      "Lyst Data": null,
-      "BuzzInContent": "https://www.buzzincontent.com/feed/",
-      "Social Media Today": "https://www.socialmediatoday.com/feeds/news/",
-      "India Today": "https://www.indiatoday.in/rss/home",
-      "Architectural Digest India": "https://www.architecturaldigest.in/feed/",
-      "The Established": "https://www.theestablished.com/feed/",
-      "Monochrome Watches": "https://monochrome-watches.com/feed/",
-      "Futura Sciences": "https://www.futura-sciences.com/en/rss/news.xml",
-      "ELLE India": "https://elle.in/feed/" 
-    
+    "9to5Google": "https://9to5google.com/feed",
+    "Onmanorama": "https://www.onmanorama.com/rss.html",
+    "The Talented Indian": "https://www.thetalentedindian.com/feed",
+    "Gadgets 360": "https://www.gadgets360.com/rss",
+    "BBC News": "https://feeds.bbci.co.uk/news/rss.xml",
+    "Mongabay": "https://news.mongabay.com/feed/",
+    "Storyboard18": "https://www.storyboard18.com/feed/",
+    "Tourism India Online": "https://tourismindiaonline.com/feed/",
+    "TwoCircles.net": "https://twocircles.net/feed",
+    "The Better India": "https://www.thebetterindia.com/feed/",
+    "The Whiskey Wash": "https://thewhiskeywash.com/feed/",
+    "Homegrown": "https://homegrown.co.in/feed",
+    "BuzzInContent": "https://www.buzzincontent.com/feed/",
+    "Social Media Today": "https://www.socialmediatoday.com/feeds/news/",
+    "India Today": "https://www.indiatoday.in/rss/home",
+    "Architectural Digest India": "https://www.architecturaldigest.in/feed/",
+    "The Established": "https://www.theestablished.com/feed/",
+    "Monochrome Watches": "https://monochrome-watches.com/feed/",
+    "Futura Sciences": "https://www.futura-sciences.com/en/rss/news.xml",
+    "ELLE India": "https://elle.in/feed/",
 }
 
-# -----------------------------------------------------------------------
-# 2. CONFIGURE YOUR KEYWORDS — this is your niche lens
-#    NOTE: list entries CAN legally repeat (unlike dict keys) — Python
-#    won't stop you. But every repeated keyword gets counted twice per
-#    mention, which artificially inflates its rank. Keep each keyword
-#    (case-insensitive) listed exactly once.
-# -----------------------------------------------------------------------
 KEYWORDS = [
-    Indian Heritage,
-    Indian Handicrafts,
-    cultural revival,
-    Traditional Crafts,
-    Indian Artisans,
-    embroidery,
-    Brand Storytelling,
-    founder stories,
-    identity design,
-    Design Innovation,
-    Industrial design,
-    packaging,
-    product design,
-    Consumer Psychology,
-    Buying behavior,
-    perception,
-    habits,
-    Indian Startups,
-    consumer brands,
-    manufacturing,
-    D2C Brands,
-    Manufacturing,
-    Factories,
-    Make in India,
-    production innovation,
-    Entrepreneurship,
-    Founders,
-    business creation,
-    scaling,
-    Cultural Entrepreneurship,
-    Businesses built around culture,
-    heritage business,
-    Craft Revival,
-    Modern revival,
-    dying crafts,
-    Sustainable Materials,
-    Natural fibres,
-    eco materials,
-    biomaterials,
-    Circular Economy,
-    Waste-to-value,
-    Rural Innovation,
-    Grassroots innovation,
-    Indigenous Technology,
-    Traditional techniques,
-    modern technology,
-    Packaging Innovation,
-    Premiumization,
-    Retail Trends,
-    Consumer retail,
-    retail shifts,
-    Luxury India,
-    Indian premium brands,
-    Made in India,
-    global recognition,
-    Export Growth,
-    Indian exports,
-    international markets,
-    Geographical Indications,
-    GI Tags,
-    GI registration,
-    GI commercialization,
-    Food Innovation,
-    Traditional foods,
-    food brands,
-    Fashion Innovation,
-    Textiles,
-    heritage fabrics,
-    fashion designers,
-    Consumer Trends,
-    Lifestyle shifts,
-    Marketing Campaigns,
-    Creative campaigns,
-    Creator Economy,
-    Personal brands,
-    media businesses,
-    Business Models,
-    distribution,
-    pricing,
-    monetization,
-    Future of Work,
-    AI,
-    automation,
-    manufacturing jobs,
-    India Innovation,
-    Technology,
-    research,
-    patents,
-    deep tech
+    "Indian Heritage",
+    "Indian Handicrafts",
+    "cultural revival",
+    "Traditional Crafts",
+    "Indian Artisans",
+    "embroidery",
+    "Brand Storytelling",
+    "founder stories",
+    "identity design",
+    "Design Innovation",
+    "Industrial design",
+    "packaging",
+    "product design",
+    "Consumer Psychology",
+    "Buying behavior",
+    "perception",
+    "habits",
+    "Indian Startups",
+    "consumer brands",
+    "manufacturing",
+    "D2C Brands",
+    "Factories",
+    "Make in India",
+    "production innovation",
+    "Entrepreneurship",
+    "Founders",
+    "business creation",
+    "scaling",
+    "Cultural Entrepreneurship",
+    "Businesses built around culture",
+    "heritage business",
+    "Craft Revival",
+    "Modern revival",
+    "dying crafts",
+    "Sustainable Materials",
+    "Natural fibres",
+    "eco materials",
+    "biomaterials",
+    "Circular Economy",
+    "Waste-to-value",
+    "Rural Innovation",
+    "Grassroots innovation",
+    "Indigenous Technology",
+    "Traditional techniques",
+    "modern technology",
+    "Packaging Innovation",
+    "Premiumization",
+    "Retail Trends",
+    "Consumer retail",
+    "retail shifts",
+    "Luxury India",
+    "Indian premium brands",
+    "Made in India",
+    "global recognition",
+    "Export Growth",
+    "Indian exports",
+    "international markets",
+    "Geographical Indications",
+    "GI Tags",
+    "GI registration",
+    "GI commercialization",
+    "Food Innovation",
+    "Traditional foods",
+    "food brands",
+    "Fashion Innovation",
+    "Textiles",
+    "heritage fabrics",
+    "fashion designers",
+    "Consumer Trends",
+    "Lifestyle shifts",
+    "Marketing Campaigns",
+    "Creative campaigns",
+    "Creator Economy",
+    "Personal brands",
+    "media businesses",
+    "Business Models",
+    "distribution",
+    "pricing",
+    "monetization",
+    "Future of Work",
+    "AI",
+    "automation",
+    "manufacturing jobs",
+    "India Innovation",
+    "Technology",
+    "research",
+    "patents",
+    "deep tech",
 ]
 
 # How many days back to consider an article "recent" (RSS often mixes dates)
 LOOKBACK_DAYS = 2
+
+# -----------------------------------------------------------------------
+# 3. AI SUMMARIZATION SETTINGS
+#    Turns a pile of matched headlines into an actual "what's happening
+#    and why it could be a video" summary, instead of just a link list.
+#    Requires an Anthropic API key (console.anthropic.com) set as the
+#    ANTHROPIC_API_KEY environment variable. If it's not set, the script
+#    still runs fine — you just get the old headline-only digest.
+# -----------------------------------------------------------------------
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL = "claude-sonnet-5"
+SUMMARIZE_TOP_N_KEYWORDS = 15   # only summarize the top N ranked keywords, to control API cost
+SUMMARIZE_MIN_MENTIONS = 2      # skip summarizing keywords with fewer mentions than this
+MAX_ARTICLES_PER_SUMMARY = 8    # cap how many headlines get sent per keyword
 
 
 def fetch_articles():
@@ -315,6 +223,71 @@ def count_keywords(articles):
     return counts, matches
 
 
+def summarize_keyword_trend(keyword, articles):
+    """Send the matched headlines for one keyword to Claude and get back
+    a short 'what's actually happening' summary plus a suggested video
+    angle. Returns None if no API key is configured or the call fails —
+    callers should fall back to the plain headline list in that case."""
+    if not ANTHROPIC_API_KEY:
+        return None
+
+    # Dedup by link, cap how many we send
+    seen_links = set()
+    unique_articles = []
+    for art in articles:
+        if art["link"] in seen_links:
+            continue
+        seen_links.add(art["link"])
+        unique_articles.append(art)
+        if len(unique_articles) >= MAX_ARTICLES_PER_SUMMARY:
+            break
+
+    headlines_block = "\n".join(
+        f"- [{a['source']}] {a['title']}: {a['summary'][:200]}"
+        for a in unique_articles
+    )
+
+    prompt = (
+        f"These are today's news headlines/snippets that mention \"{keyword}\", "
+        f"collected for a YouTube channel (Deep Pockets) about India's branding and "
+        f"value-capture gaps in global markets (e.g. India creates a product/craft/"
+        f"resource but another country or brand captures the global value from it).\n\n"
+        f"{headlines_block}\n\n"
+        f"In under 80 words total, do two things:\n"
+        f"1) Summarize what is actually being reported about \"{keyword}\" today — "
+        f"the real event, deal, launch, dispute, or trend driving these headlines.\n"
+        f"2) One line suggesting whether/how this could become a Deep Pockets video "
+        f"angle, or say 'Not a strong fit' if it's off-niche.\n"
+        f"Plain text, no headers, no markdown."
+    )
+
+    body = json.dumps({
+        "model": ANTHROPIC_MODEL,
+        "max_tokens": 300,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        text_parts = [block["text"] for block in data.get("content", []) if block.get("type") == "text"]
+        return "".join(text_parts).strip() or None
+    except (urllib.error.URLError, urllib.error.HTTPError, KeyError, ValueError) as e:
+        print(f"  [!] Summarization failed for '{keyword}': {e}")
+        return None
+
+
 def print_report(counts):
     print("\n" + "=" * 55)
     print(f"  DEEP POCKETS — TREND REPORT — {datetime.now().date()}")
@@ -339,12 +312,15 @@ def save_csv(ranked, date_str):
     print(f"Saved: {fname}")
 
 
-def save_digest(ranked, matches, date_str):
+def save_digest(ranked, matches, summaries, date_str):
     fname = f"digest_{date_str}.md"
     with open(fname, "w", encoding="utf-8") as f:
         f.write(f"# Deep Pockets — Trend Digest — {date_str}\n\n")
         for kw, count in ranked:
             f.write(f"## {kw} ({count} mentions)\n\n")
+            summary = summaries.get(kw)
+            if summary:
+                f.write(f"**What's happening:** {summary}\n\n")
             seen_links = set()
             for art in matches[kw]:
                 if art["link"] in seen_links:
@@ -364,9 +340,26 @@ def main():
     ranked = print_report(counts)
 
     date_str = str(datetime.now().date())
-    if ranked:
-        save_csv(ranked, date_str)
-        save_digest(ranked, matches, date_str)
+    if not ranked:
+        return
+
+    save_csv(ranked, date_str)
+
+    summaries = {}
+    if ANTHROPIC_API_KEY:
+        print("Generating AI summaries for top trending keywords...")
+        to_summarize = [
+            (kw, count) for kw, count in ranked[:SUMMARIZE_TOP_N_KEYWORDS]
+            if count >= SUMMARIZE_MIN_MENTIONS
+        ]
+        for kw, count in to_summarize:
+            print(f"  Summarizing '{kw}' ({count} mentions)...")
+            summaries[kw] = summarize_keyword_trend(kw, matches[kw])
+    else:
+        print("  [i] ANTHROPIC_API_KEY not set — skipping AI summaries, "
+              "digest will show headlines only.")
+
+    save_digest(ranked, matches, summaries, date_str)
 
 
 if __name__ == "__main__":

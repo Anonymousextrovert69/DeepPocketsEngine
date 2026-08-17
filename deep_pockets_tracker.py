@@ -28,6 +28,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from keyword_engine import score_article, explain
 from collections import defaultdict
 from datetime import datetime, timedelta
 

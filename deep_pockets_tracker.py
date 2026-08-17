@@ -199,7 +199,6 @@ KEYWORDS = [
     "Creative campaigns",
     "Creator Economy",
     "Personal brands",
-    "media businesses",
     "Business Models",
     "distribution",
     "pricing",
@@ -210,6 +209,17 @@ KEYWORDS = [
     "research",
     "patents",
     "deep tech",
+    "Indian Watch"
+    "Indian Food"
+    "Textile"
+    "Healthy Cookware"
+    "Liquor"
+    "Alcohol"
+    "Copied Design"
+    "Kashmir"
+    "Farming"
+    "Indian Sneaker"
+    ""
 ]
 
 # Broad words that will always top the chart on volume alone and drown out

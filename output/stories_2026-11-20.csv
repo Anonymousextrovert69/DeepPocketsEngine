@@ -1,0 +1,4 @@
+Rank,Score,Title,Source,Triggers,CoreTerms,Why,Link
+1,7,Madras High Court agrees to hear Bangladesh’s challenge to India’s GI tag for Bengal's Tangail saree,Bar and Bench,policy_shift,gi tag,[policy_shift] “GI tag for” | core: gi tag,https://www.barandbench.com/news/litigation/madras-high-court-agrees-to-hear-bangladeshs-challenge-to-indias-gi-tag-for-bengals-tangail-saree
+2,4,"Inside Kuchina, Bengaluru's New Restaurant Dedicated To The Art Of Handmade Pasta",Homegrown,,handmade,core: handmade,https://homegrown.co.in/homegrown-explore/inside-kuchina-bengalurus-new-restaurant-dedicated-to-the-art-of-handmade-pasta
+3,3,"Wildlife trafficking persists in West, Central Africa despite crackdowns: Report",Mongabay Global,,handwoven,core: handwoven,https://news.mongabay.com/2026/11/wildlife-trafficking-persists-in-west-central-africa-despite-crackdowns-report/
